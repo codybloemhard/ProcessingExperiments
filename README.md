@@ -1,5 +1,4 @@
-# Landscape2DScreensaver
-Simple little one session project.
-It is just a simple, infinite, abstract, colourful animation.
+#Some processing projects
 
+Landscape2DScreensaver
 https://youtu.be/B3Vf_HizDSc
