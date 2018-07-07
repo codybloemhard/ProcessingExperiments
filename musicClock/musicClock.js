@@ -14,14 +14,15 @@ function draw() {
   background(0);
   var m = millis();
   var progress = (m % measureLen) / measureLen;
+  stroke(0);
   
   fill(255);
   Rect(2*sigBezel, wh/2 - pBarH/2, 2*sigBezel + progress * (ww - 4*sigBezel), wh/2 + pBarH/2);
-  fill(127);
+  fill(64);
   Rect(2*sigBezel + progress * (ww - 4*sigBezel), wh/2 - pBarH/2, ww - 2*sigBezel, wh/2 + pBarH/2);
   
   fill(64);
-  rect(sigBezel, sigBezel, ww - 2*sigBezel, wh/2 - pBarH/2 - 2*sigBezel);
+  Rect(sigBezel, sigBezel, ww - sigBezel, wh/2 - pBarH/2 - sigBezel);
   var midSigRectH = (sigBezel + wh/2 - pBarH/2 - sigBezel) / 2;
   var c = 255;
   var bLen = (ww - 4*sigBezel) / sigA;
