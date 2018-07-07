@@ -16,9 +16,9 @@ function draw() {
   var progress = (m % measureLen) / measureLen;
   
   fill(255);
-  rect(0, wh/2 - pBarH/2, progress * ww, pBarH);
+  Rect(2*sigBezel, wh/2 - pBarH/2, 2*sigBezel + progress * (ww - 4*sigBezel), wh/2 + pBarH/2);
   fill(127);
-  rect(progress * ww, wh/2 - pBarH/2, ww, pBarH);
+  Rect(2*sigBezel + progress * (ww - 4*sigBezel), wh/2 - pBarH/2, ww - 2*sigBezel, wh/2 + pBarH/2);
   
   fill(64);
   rect(sigBezel, sigBezel, ww - 2*sigBezel, wh/2 - pBarH/2 - 2*sigBezel);
@@ -31,4 +31,8 @@ function draw() {
     if(c == 255) c = 127;
     else c = 255;
   }
+}
+
+function Rect(px, py, qx, qy){
+  rect(px, py, qx - px, qy - py);
 }
