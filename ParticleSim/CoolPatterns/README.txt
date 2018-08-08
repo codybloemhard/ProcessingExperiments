@@ -20,3 +20,5 @@ only 2 symmetric parts.
 It begins as a blob but as the system loses energy, more holes appear and
 very interesting patterns appear, looking like 8bit aliens from a old and
 well known game. After that is loses to much energy and dies off.
+
+https://youtu.be/T16IxTx62sg
