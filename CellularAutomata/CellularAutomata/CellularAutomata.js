@@ -1,4 +1,4 @@
-var ww = 1600, wh = 900;
+var ww = 1600, wh = 900, uh = 200;
 var gs = 8;
 var gw = Math.floor(ww / gs), gh = Math.floor(wh / gs);
 var energyColourStrength = 0.01;
@@ -8,10 +8,13 @@ var colours = [];
 var field, nfield;
 var realtime = false;
 
+var modes = ['Z', 'A', 'B', 'C'];
+var drawmode = 0;
+
 function setup() {
   randomSeed(666);
   frameRate(60);
-  createCanvas(ww, wh);
+  createCanvas(ww, wh + uh);
   field = CreateField(gw, gh);
   nfield = CreateField(gw, gh);
   colours['Z'] = [255, 255, 255];
@@ -19,9 +22,8 @@ function setup() {
   colours['B'] = [0, 255, 0];
   colours['C'] = [0, 0, 255];
   
-  field[20][20] = new Cell('A', 0);
-  field[gw - 20][20] = new Cell('B', 0);
-  field[gw/2][gh-20] = new Cell('C', 0);
+  background(0);
+  RenderUI();
 }
 
 function draw() {
@@ -29,8 +31,14 @@ function draw() {
   if(mouseIsPressed){
     var xx = Math.floor(mouseX / gs);
     var yy = Math.floor(mouseY / gs);
-    field[xx][yy] = new Cell('Z', 0);
-    if(!realtime) Render();
+    var outside = xx < 0 || xx >= gw || yy < 0 || yy > gh;
+    if(!outside){
+      field[xx][yy] = new Cell(modes[drawmode], 0);
+      if(!realtime){
+        RenderField();
+        RenderUI();
+      }
+    }
   }
   if(!realtime) return;
   //Updating
@@ -42,10 +50,11 @@ function draw() {
   nfield = temp;
   ZeroField(nfield);
   //Drawing
-  Render();
+  RenderField();
+  RenderUI();
 }
 
-function Render(){
+function RenderField(){
   background(0);
   noStroke();
   var m = '0';
@@ -56,9 +65,30 @@ function Render(){
     field[x][y].Draw(x, y);
 }
 
+function RenderUI(){
+  //draw mode indicator
+  var uih = uh - 40;
+  FillMode(modes[drawmode]);
+  rect(40, wh + 20, uih, uih);
+  //next draw colour select
+  fill(255);
+  rect(40 + uih + 40, wh + 20, uih, uih);
+  stroke(0);
+  line(40 + uih + 40, wh + 20, 80 + uih*2, wh + (uh/2));
+  line(40 + uih + 40, wh + uh - 20, 80 + uih*2, wh + (uh/2));
+}
+
 function keyPressed() {
   if(keyCode === 32)//space
     realtime = !realtime;
+}
+
+function mousePressed(){
+  var uih = uh - 40;
+  if(mouseIsPressed && mouseX > 80 + uih && mouseX < 80 + 2*uih && mouseY > wh && mouseY < wh + uh){
+    drawmode = (drawmode+1) % modes.length;
+    RenderUI();
+  } 
 }
 
 function Cell(m, e){
@@ -101,13 +131,14 @@ function Cell(m, e){
    
   this.Draw = function(x, y){
     if(this.mode === '0') return;
-    var col = colours[this.mode]
-    var alp = this.energy * 255 * energyColourStrength;
-    //var str = Math.min(255, Math.max(alp, 120));
-    //fill(col[0], col[1], col[2], str);
-    fill(col[0], col[1], col[2], 255);
+    FillMode(this.mode);
     rect(x * gs, y * gs, gs, gs);
   }
+}
+
+function FillMode(mode){
+   var col = colours[mode];
+   fill(col[0], col[1], col[2], 255);
 }
 
 function ZeroField(f){
