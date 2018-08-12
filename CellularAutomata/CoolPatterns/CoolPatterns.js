@@ -5,6 +5,7 @@ var gw = Math.floor(ww / gs), gh = Math.floor(wh / gs);
 
 var field;
 var realtime = true;
+var lastpoint = [0, 0];
 
 function setup() {
   frameRate(1);

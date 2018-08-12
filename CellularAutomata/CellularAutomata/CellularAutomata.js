@@ -8,12 +8,15 @@ var colours = [];
 var field, nfield;
 var realtime = false;
 
+var agentmodes = ['A', 'B', 'C'];
 var modes = ['Z', 'A', 'B', 'C'];
 var drawmode = 0;
+var lastpoint = [-1, -1];
 
 function setup() {
   randomSeed(666);
   frameRate(60);
+  pixelDensity(1);
   createCanvas(ww, wh + uh);
   field = CreateField(gw, gh);
   nfield = CreateField(gw, gh);
@@ -31,14 +34,18 @@ function draw() {
   if(mouseIsPressed){
     var xx = Math.floor(mouseX / gs);
     var yy = Math.floor(mouseY / gs);
-    var outside = xx < 0 || xx >= gw || yy < 0 || yy > gh;
-    if(!outside){
-      field[xx][yy] = new Cell(modes[drawmode], 0);
-      if(!realtime){
-        RenderField();
-        RenderUI();
-      }
+    if(lastpoint[0] === -1 && lastpoint[1] === -1)
+      PlotField(xx, yy);
+    else
+      LineField(xx, yy, lastpoint[0], lastpoint[1]);
+    lastpoint = [xx, yy];
+    if(!realtime){
+      RenderField();
+      RenderUI();
     }
+  }
+  else{
+    lastpoint = [-1, -1];
   }
   if(!realtime) return;
   //Updating
@@ -149,6 +156,14 @@ function ZeroField(f){
   }
 }
 
+function RandomField(){
+  for(var x = 0; x < gw; x++)
+  for(var y = 0; y < gh; y++){
+    var mode = random(agentmodes);
+    field[x][y] = new Cell(mode, 0);
+  }
+}
+
 function CreateField(w, h){
   w = Math.floor(w);
   h = Math.floor(h);
@@ -171,4 +186,33 @@ function edgeY(y){
   if(y < 0) return gh - 1;
   if(y >= gh) return 0;
   return y;
+}
+
+function PlotField(x, y){
+  x = Math.floor(x);
+  y = Math.floor(y);
+  var outside = x < 0 || x >= gw || y < 0 || y > gh;
+  if(outside) return;
+  field[x][y] = new Cell(modes[drawmode], 0);
+}
+//https://en.wikipedia.org/wiki/Digital_differential_analyzer_(graphics_algorithm)
+function LineField(x1, y1, x2, y2){
+  var dx = x2 - x1;
+  var dy = y2 - y1;
+  var step;
+  if(Math.abs(dx) >= Math.abs(dy))
+    step = Math.abs(dx);
+  else
+    step = Math.abs(dy);
+  dx = dx / step;
+  dy = dy / step;
+  var x = x1;
+  var y = y1;
+  var i = 1;
+  while(i <= step){
+    PlotField(x, y);
+    x += dx;
+    y += dy;
+    i++;
+  }
 }
