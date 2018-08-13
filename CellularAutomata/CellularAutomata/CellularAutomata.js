@@ -1,5 +1,5 @@
 var ww = 1600, wh = 900, uh = 200;
-var gs = 8;
+var gs = 4;
 var gw = Math.floor(ww / gs), gh = Math.floor(wh / gs);
 var energyColourStrength = 0.01;
 
@@ -12,11 +12,11 @@ var agentmodes = ['A', 'B', 'C'];
 var modes = ['Z', 'A', 'B', 'C'];
 var drawmode = 0;
 var lastpoint = [-1, -1];
+var lives = 10;
 
 function setup() {
   randomSeed(666);
   frameRate(60);
-  pixelDensity(1);
   createCanvas(ww, wh + uh);
   field = CreateField(gw, gh);
   nfield = CreateField(gw, gh);
@@ -24,6 +24,8 @@ function setup() {
   colours['A'] = [255, 0, 0];
   colours['B'] = [0, 255, 0];
   colours['C'] = [0, 0, 255];
+  
+  AssignField(field, '0', lives);
   
   background(0);
   RenderUI();
@@ -114,8 +116,12 @@ function Cell(m, e){
      surroundings[3] = field[x][edgeY(y + 1)];
      if(this.mode === '0'){
        for(var i = 0; i < 4; i++){
-         if(surroundings[i].mode != '0' && surroundings[i].mode != 'Z')
-           nfield[x][y] = new Cell(surroundings[i].mode, 0);
+         if(surroundings[i].mode != '0' && surroundings[i].mode != 'Z'){
+           if(this.energy <= 1)
+             nfield[x][y] = new Cell(surroundings[i].mode, lives);
+           else
+             this.energy--;
+         }
        }
        return; 
      }
@@ -123,17 +129,21 @@ function Cell(m, e){
      var em = this.mode;
      for(var i = 0; i < 4; i++){
         var sm = surroundings[i].mode;
-        var diff = sm - this.mode
-        if((em == 'A' && sm == 'B') || (em == 'B' && sm == 'C') || (em == 'C' && sm == 'A')){//diff == 1 || diff == (3 - 1)
-          eaten = true;
-          em = sm;
-          break;
+        var diff = sm.charCodeAt(0) - em.charCodeAt(0);
+        if(diff == 1 || (-diff) == (agentmodes.length - 1)){
+          if(this.energy <= 1){
+            eaten = true;
+            em = sm;
+            break;
+          }
+          else
+            this.energy--;
         }
      }
      if(eaten)
-       nfield[x][y] = new Cell(em, 0);
+       nfield[x][y] = new Cell(em, lives);
      else
-       nfield[x][y] = new Cell(this.mode, 0);
+       nfield[x][y] = new Cell(this.mode, this.energy);
   }
    
   this.Draw = function(x, y){
@@ -153,6 +163,14 @@ function ZeroField(f){
   for(var j = 0; j < f[i].length; j++){
       f[i][j][0] = '0';
       f[i][j][0] = 0;
+  }
+}
+
+function AssignField(f, m, e){
+  for(var i = 0; i < f.length; i++)
+  for(var j = 0; j < f[i].length; j++){
+      f[i][j][0] = m;
+      f[i][j][0] = e;
   }
 }
 
