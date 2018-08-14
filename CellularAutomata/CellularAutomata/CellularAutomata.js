@@ -7,6 +7,7 @@ var colours = [];
 
 var field, nfield;
 var realtime = false;
+var takestep = false;
 
 var agentmodes = ['A', 'B', 'C'];
 var modes = ['Z', 'A', 'B', 'C'];
@@ -106,11 +107,17 @@ function RenderUI(){
   stroke(0);
   line(40 + uih + 40, wh + 20, 80 + uih*2, wh + (uh/2));
   line(40 + uih + 40, wh + uh - 20, 80 + uih*2, wh + (uh/2));
-}
-
-function keyPressed() {
-  if(keyCode === 32)//space
-    realtime = !realtime;
+  //play/pause button
+  fill(255);
+  rect(120 + 2*uih, wh + 20, uih, uih);
+  fill(255, 0, 0);
+  noStroke();
+  if(realtime)
+    triangle(120 + 2*uih + 20, wh + 40, 120 + 2*uih + uih - 20, wh + 20 + uih/2, 120 + 2*uih + 20, wh + uih);
+  else{
+    rect(120 + 2*uih + 20, wh + 40, 40, uih - 40);
+    rect(120 + 2*uih + uih - 60, wh + 40, 40, uih - 40);
+  }
 }
 
 function mousePressed(){
@@ -118,7 +125,11 @@ function mousePressed(){
   if(mouseIsPressed && mouseX > 80 + uih && mouseX < 80 + 2*uih && mouseY > wh && mouseY < wh + uh){
     drawmode = (drawmode+1) % modes.length;
     RenderUI();
-  } 
+  }
+  if(mouseIsPressed && mouseX > 120 + 2*uih && mouseX < 120 + 2*uih + uih && mouseY > wh + 20 && mouseY < wh + 20 + uih){
+    realtime = !realtime;
+    RenderUI();
+  }
 }
 
 function Cell(m, e){
@@ -144,7 +155,7 @@ function Cell(m, e){
              this.energy--;
          }
        }
-       return; 
+       return;
      }
      var eaten = false;
      var em = this.mode;
