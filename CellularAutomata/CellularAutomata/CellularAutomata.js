@@ -12,7 +12,7 @@ var agentmodes = ['A', 'B', 'C'];
 var modes = ['Z', 'A', 'B', 'C'];
 var drawmode = 0;
 var lastpoint = [-1, -1];
-var lives = 10;
+var lives = 3;
 
 function setup() {
   randomSeed(666);
@@ -20,6 +20,7 @@ function setup() {
   createCanvas(ww, wh + uh);
   field = CreateField(gw, gh);
   nfield = CreateField(gw, gh);
+  colours['0'] = [0, 0, 0];
   colours['Z'] = [255, 255, 255];
   colours['A'] = [255, 0, 0];
   colours['B'] = [0, 255, 0];
@@ -65,13 +66,33 @@ function draw() {
 
 function RenderField(){
   background(0);
-  noStroke();
-  var m = '0';
-  var str = 0;
-  var col = [0,0,0]
-  for(var x = 0; x < gw; x++)
-  for(var y = 0; y < gh; y++)
-    field[x][y].Draw(x, y);
+  var ind = 0;
+  var c = [0,0,0];
+  loadPixels();
+  if(gs === 1)
+    for(var x = 0; x < gw; x++)
+    for(var y = 0; y < gh; y++){
+      ind = 4 * (y * gw + x);
+      c = colours[field[x][y].mode];
+      pixels[ind + 0] = c[0];
+      pixels[ind + 1] = c[1];
+      pixels[ind + 2] = c[2];
+      pixels[ind + 3] = 255;
+    }
+  else
+    for(var x = 0; x < gw; x++)
+    for(var y = 0; y < gh; y++){
+      c = colours[field[x][y].mode];
+      for(var i = 0; i < gs; i++)
+      for(var j = 0; j < gs; j++){
+        ind = 4 * ((y * gs + j) * (gw * gs) + (x * gs + i));
+        pixels[ind + 0] = c[0];
+        pixels[ind + 1] = c[1];
+        pixels[ind + 2] = c[2];
+        pixels[ind + 3] = 255;
+      }
+    }
+  updatePixels();
 }
 
 function RenderUI(){
@@ -145,7 +166,7 @@ function Cell(m, e){
      else
        nfield[x][y] = new Cell(this.mode, this.energy);
   }
-   
+  
   this.Draw = function(x, y){
     if(this.mode === '0') return;
     FillMode(this.mode);
