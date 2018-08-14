@@ -141,13 +141,10 @@ function Cell(m, e){
        nfield[x][y] = new Cell('Z', 0);
        return;
      }
-     var surroundings = new Array(4);
-     surroundings[0] = field[edgeX(x - 1)][y];
-     surroundings[1] = field[edgeX(x + 1)][y];
-     surroundings[2] = field[x][edgeY(y - 1)];
-     surroundings[3] = field[x][edgeY(y + 1)];
+     //var surroundings = VonNeumannHood(x, y);
+     var surroundings = MooreHood(x, y);
      if(this.mode === '0'){
-       for(var i = 0; i < 4; i++){
+       for(var i = 0; i < surroundings.length; i++){
          if(surroundings[i].mode != '0' && surroundings[i].mode != 'Z'){
            if(this.energy <= 1)
              nfield[x][y] = new Cell(surroundings[i].mode, lives);
@@ -159,7 +156,7 @@ function Cell(m, e){
      }
      var eaten = false;
      var em = this.mode;
-     for(var i = 0; i < 4; i++){
+     for(var i = 0; i < surroundings.length; i++){
         var sm = surroundings[i].mode;
         var diff = sm.charCodeAt(0) - em.charCodeAt(0);
         if(diff == 1 || (-diff) == (agentmodes.length - 1)){
@@ -226,16 +223,38 @@ function CreateField(w, h){
   return x;
 }
 
-function edgeX(x){
+function EdgeX(x){
   if(x < 0) return gw - 1;
   if(x >= gw) return 0;
   return x;
 }
 
-function edgeY(y){
+function EdgeY(y){
   if(y < 0) return gh - 1;
   if(y >= gh) return 0;
   return y;
+}
+
+function VonNeumannHood(x, y){
+  var s = new Array(4);
+  s[0] = field[EdgeX(x - 1)][y];
+  s[1] = field[EdgeX(x + 1)][y];
+  s[2] = field[x][EdgeY(y - 1)];
+  s[3] = field[x][EdgeY(y + 1)]; 
+  return s;
+}
+
+function MooreHood(x, y){
+  var s = new Array(8);
+  s[0] = field[EdgeX(x - 1)][EdgeY(y - 1)];
+  s[1] = field[x][EdgeY(y - 1)];
+  s[2] = field[EdgeX(x + 1)][EdgeY(y - 1)];
+  s[3] = field[EdgeX(x - 1)][y];
+  s[4] = field[EdgeX(x + 1)][y];
+  s[5] = field[EdgeX(x - 1)][EdgeY(y + 1)];
+  s[6] = field[x][EdgeY(y + 1)];
+  s[7] = field[EdgeX(x + 1)][EdgeY(y + 1)];
+  return s;
 }
 
 function PlotField(x, y){
