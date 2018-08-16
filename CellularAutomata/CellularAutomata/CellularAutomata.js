@@ -9,8 +9,10 @@ var field, nfield;
 var realtime = false;
 var takestep = false;
 
-var agentmodes = ['A', 'B', 'C'];
-var modes = ['Z', 'A', 'B', 'C'];
+/*var agentmodes = ['A', 'B', 'C'];
+var modes = ['Z', 'A', 'B', 'C'];*/
+var agentmodes = ['A', 'B', 'C', 'D', 'E', 'F'];
+var modes = ['Z', 'A', 'B', 'C', 'D', 'E', 'F'];
 var drawmode = 0;
 var lastpoint = [-1, -1];
 var lives = 3;
@@ -23,9 +25,17 @@ function setup() {
   nfield = CreateField(gw, gh);
   colours['0'] = [0, 0, 0];
   colours['Z'] = [255, 255, 255];
+  /*colours['0'] = [0, 0, 0];
+  colours['Z'] = [255, 255, 255];
   colours['A'] = [255, 0, 0];
   colours['B'] = [0, 255, 0];
-  colours['C'] = [0, 0, 255];
+  colours['C'] = [0, 0, 255];*/
+  colours['A'] = [255, 0, 0];
+  colours['B'] = [255, 255, 0];
+  colours['C'] = [0, 255, 0];
+  colours['D'] = [0, 255, 255];
+  colours['E'] = [0, 0, 255];
+  colours['F'] = [255, 0, 255];
   
   AssignField(field, '0', lives);
   
@@ -142,7 +152,9 @@ function Cell(m, e){
        return;
      }
      //var surroundings = VonNeumannHood(x, y);
-     var surroundings = MooreHood(x, y);
+     //var surroundings = MooreHood(x, y);
+     //var surroundings = RandomInHood(VonNeumannHood(x, y));
+     var surroundings = RandomInHood(MooreHood(x, y));
      if(this.mode === '0'){
        for(var i = 0; i < surroundings.length; i++){
          if(surroundings[i].mode != '0' && surroundings[i].mode != 'Z'){
@@ -233,6 +245,12 @@ function EdgeY(y){
   if(y < 0) return gh - 1;
   if(y >= gh) return 0;
   return y;
+}
+
+function RandomInHood(hood){
+  var s = [];
+  s.push(random(hood));
+  return s;
 }
 
 function VonNeumannHood(x, y){
