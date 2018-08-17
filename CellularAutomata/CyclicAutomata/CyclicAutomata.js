@@ -25,9 +25,7 @@ function setup() {
   nfield = CreateField(gw, gh);
   colours['0'] = [0, 0, 0];
   colours['Z'] = [255, 255, 255];
-  /*colours['0'] = [0, 0, 0];
-  colours['Z'] = [255, 255, 255];
-  colours['A'] = [255, 0, 0];
+  /*colours['A'] = [255, 0, 0];
   colours['B'] = [0, 255, 0];
   colours['C'] = [0, 0, 255];*/
   colours['A'] = [255, 0, 0];
@@ -69,7 +67,6 @@ function draw() {
   var temp = field;
   field = nfield;
   nfield = temp;
-  ZeroField(nfield);
   //Drawing
   RenderField();
   RenderUI();
@@ -197,14 +194,6 @@ function Cell(m, e){
 function FillMode(mode){
    var col = colours[mode];
    fill(col[0], col[1], col[2], 255);
-}
-
-function ZeroField(f){
-  for(var i = 0; i < f.length; i++)
-  for(var j = 0; j < f[i].length; j++){
-      f[i][j][0] = '0';
-      f[i][j][0] = 0;
-  }
 }
 
 function AssignField(f, m, e){
