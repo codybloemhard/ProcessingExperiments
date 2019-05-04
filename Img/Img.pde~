@@ -32,8 +32,8 @@ void CirclesGrey(PImage img, int size){
             str += blue(col);
         }
         str /= size*size;
-        str /= 255 * 3;
-        str *= size;
+        str /= 255;
+        str *= hsize;
         ellipse(bx + hsize, by + hsize, str, str);
     }
 }
@@ -62,10 +62,10 @@ void CirclesColour(PImage img, int size, float mul){
         g /= size*size;
         b /= size*size;
         float str = r + g + b;
-        str /= 255 * 3;
+        str /= 255;
         if (mul > 1)
             mul = 1;
-        str *= size * mul;
+        str *= hsize * mul;
         fill(r,g,b);
         circle(bx + hsize, by + hsize, str);
     }
