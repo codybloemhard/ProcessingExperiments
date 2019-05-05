@@ -1,18 +1,20 @@
 PImage img;
 float f;
 boolean start = false;
-int mode = 2;
+int mode = 3;
 
 void setup() {
-    size(1920,1080,P2D);
-    //size(1600,1200,P2D);
+    //size(1920,1080,P2D);
+    size(1600,1200,P2D);
     //size(1200,900,P2D);
-    img = loadImage("test.jpg");
+    img = loadImage("test1.jpg");
     //image(img,0,0);
     if(mode == 1){
         f = 100;
     }else if(mode == 2){
         f = 200;
+    }else if(mode == 3){
+        
     }
 }
 
@@ -37,6 +39,8 @@ void draw() {
         int times = (int)(0.05f * img.width * img.height) / size;
         for(int i = 0; i < times; i++)
             RandomCircles(img, size);
+    }else if(mode == 3){
+        ReduceImage(img);
     }
 }
 
@@ -88,6 +92,11 @@ void RandomCircles(PImage img, int size){
     DrawAvgColCircle(sx, sy, size, 20);
 }
 
+void ReduceImage(PImage img){
+    ReduceColours(img, 6);
+    image(img,0,0);
+}
+
 //helpers
 
 void DrawAvgColCircle(int sx, int sy, int size, int alpha){
@@ -114,4 +123,19 @@ void DrawAvgColCircle(int sx, int sy, int size, int alpha){
     fill(r, g, b, alpha);
     float hsize = (float)size / 2.0f;
     circle(sx + hsize, sy + hsize, str);
+}
+
+void ReduceColours(PImage img, int degree){
+    loadPixels();
+    for(int x = 0; x < img.width; x++)
+    for(int y = 0; y < img.height; y++){
+        int loc = x + y*img.width;
+        color col = img.pixels[loc];
+        float mul = 255 / degree;
+        float r = (int)map(red(col), 0, 255, 0, degree) * mul;
+        float g = (int)map(green(col), 0, 255, 0, degree) * mul;
+        float b = (int)map(blue(col), 0, 255, 0, degree) * mul;
+        img.pixels[loc] = color(r,g,b);
+    }
+    updatePixels();
 }
