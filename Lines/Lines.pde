@@ -5,6 +5,8 @@ short[][] grid;
 int x = 0, y = 0;
 int dx = 0, dy = 1;
 boolean run = false;
+int current = 1;
+float chance = 0.05;
 
 void setup() {
     //size(1920,1080,P2D);
@@ -28,24 +30,30 @@ void setup() {
     }
     background(0);
     //image(img,0,0,width,height);
-    set_edge_start();
+    set_random_start();
 }
 
 void draw() {
+    noStroke();
     if(!run) return;
     for(int i = 0; i < 20; i++){
-        noStroke();
-        fill(255,0,0);
-        rect(x, y, 1, 1);
-        int nx = x + dx;
-        int ny = y + dy;
-        if(get_from_grid(nx,ny) != 1){
-            set_edge_start();
-        }else{
-            x = nx;
-            y = ny;
+        if(get_from_grid(x,y) != current){
+            set_random_start();
+            current = get_from_grid(x, y);
+            if(current == 0){
+                fill(0,0,255);
+                chance = 0.08f;
+            }
+            else{
+                fill(255,0,0);
+                chance = 0.04f;
+            }
+            continue;
         }
-        set_random_dir(0.06f);
+        rect(x, y, 1, 1);
+        x = x + dx;
+        y = y + dy;
+        set_random_dir(chance);
     }
 }
 
@@ -71,36 +79,22 @@ void set_random_dir(float chance){
     }
 }
 
-void set_edge_start(){
-    float r = random(100);
-    if(r < 25.0f){
-        x = (int)random(width);
-        y = 0;
-        dx = 0;
-        dy = 1;
-    }else if(r < 50.0f){
-        x = (int)random(width);
-        y = height - 1;
-        dx = 0;
-        dy = -1;
-    }else if(r < 75.0f){
-        y = (int)random(height);
-        x = 0;
-        dx = 1;
+void set_random_start(){
+    x = (int)random(width);
+    y = (int)random(height);
+    if(random(1) < 0.5){
         dy = 0;
-    }else{
-        y = (int)random(height);
-        x = width - 1;
-        dx = -1;
-        dy = 0;
+        if(random(1) < 0.5) dx = 1;
+        else dx = -1;
+    }
+    else{
+        dx = 0;
+        if(random(1) < 0.5) dy = 1;
+        else dy = -1;
     }
 }
 
 short get_from_grid(int x, int y){
     if(x < 0 || x >= width || y < 0 || y >= height) return -1;
     return grid[(int)((float)x / width * img.width)][(int)((float)y / height * img.height)];
-}
-
-boolean ok_pix(int x, int y){
-    return true;
 }
