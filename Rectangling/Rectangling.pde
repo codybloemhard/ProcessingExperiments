@@ -33,17 +33,25 @@ class Area{
                 this.y = y;
                 this.w = w;
                 this.h = h;
-                int b2 = border * 2;
-                if(b2 >= w || b2 >= h){
+                int b3 = border * 3;
+                if(border * 4 >= w || border * 4 >= h){
                         a = null;
                         b = null;
                         return;
                 }
-                int w0 = (int)random(0, w - b2);
-                int w1 = (w - b2) - w0;
-                int nh = h - b2;
-                a = new Area(border, x + border, y + border, w0, nh);
-                b = new Area(border, x + border + w0, y + border, w1, nh);
+                if(random(0,1) > 0.5f){
+                        int w0 = (int)random(0, w - b3);
+                        int w1 = (w - b3) - w0;
+                        int nh = h - border * 2;
+                        a = new Area(border, x + border, y + border, w0, nh);
+                        b = new Area(border, x + w0 + border*2, y + border, w1, nh);
+                }else{
+                        int h0 = (int)random(0, h - b3);
+                        int h1 = (h - b3) - h0;
+                        int nw = w - border * 2;
+                        a = new Area(border, x + border, y + border, nw, h0);
+                        b = new Area(border, x + border, y + h0 + border*2, nw, h1);
+                }
         }
 
         public void Draw(){
