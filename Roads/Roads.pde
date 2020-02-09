@@ -1,7 +1,7 @@
 int size = 1200;
-int thickness = 32;
-int amount = 3;
-int counter = 0;
+int thickness = 16;
+int amount = 4;
+int counter = 1;
 
 int[][] grid;
 
@@ -20,7 +20,7 @@ void draw() {
         noStroke();
         if(counter == amount){
                 counter = 0;
-                amount *= 2;
+                amount *= 3;
                 thickness /= 2;
         }
         float x = random(0, size);
@@ -28,11 +28,26 @@ void draw() {
         if(grid[(int)x][(int)y] != 0) return;
         float dx = random(-1,1);
         float dy = random(-1,1);
+        drawline(x, y, dx, dy, false);
+        drawline(x, y, -dx, -dy, true);
+        counter++;
+}
+
+void drawline(float x, float y, float dx, float dy, boolean second){
         int lx = (int)x, ly = (int)y;
-        fill(255);
+        if(second){
+                while((int)x == lx && (int)y == ly){
+                        x += dx;
+                        y += dy;
+                }
+                lx = (int)x;
+                ly = (int)y;
+        }
         while(true){
-                if(x < 0 || x >= size || y < 0 || y >= size) break;
-                if(grid[(int)x][(int)y] != 0) break;
+                if(x < 0 || x >= size || y < 0 || y >= size || grid[(int)x][(int)y] != 0){
+                        break;
+                }
+                fill(255);
                 circle(x, y, thickness);
                 grid[(int)x][(int)y] = 1;
                 while((int)x == lx && (int)y == ly){
@@ -42,7 +57,6 @@ void draw() {
                 lx = (int)x;
                 ly = (int)y;
         }
-        counter++;
 }
 
 void keyPressed() {
