@@ -81,8 +81,13 @@ class Area{
         }
 
         public void Draw(){
-                int d = (int)(pow((float)depth / (float)maxDepth, 1.8f) * 255.0f);
-                fill(d);
+                /* int d = (int)(pow((float)depth / (float)maxDepth, 1.8f) * 255.0f); */
+                /* fill(d); */
+                float z = 0.55f;
+                int r = (int)((sin(depth * 1.0f * z) * 0.5f + 0.5f) * 255.0f);
+                int g = (int)((sin(depth * 2.5f * z) * 0.5f + 0.5f) * 255.0f);
+                int bb = (int)((sin(depth * 3.5f * z) * 0.5f + 0.5f) * 255.0f);
+                fill(r,g,bb);
                 rect(x,y,w,h);
                 if(a != null)
                         a.Draw();
