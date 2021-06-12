@@ -15,7 +15,7 @@ function setup() {
   background(31, 31, 32);
   noStroke();
   // set up voronoi
-  let size = 80;
+  let size = 160;
   // also need cells border outside frame
   let xs = int(w / size) + 2;
   let ys = int(h / size) + 2;
@@ -43,9 +43,15 @@ function setup() {
     let diff = 1000;
     for(let i = -1; i < 2; i++){
     for(let j = -1; j < 2; j++){
+      // euclidean dist
       let difx = pxs[cx + i + 1][cy + j + 1] - x;
       let dify = pys[cx + i + 1][cy + j + 1] - y;
-      let d = difx*difx + dify*dify;
+      // euclidean
+      let d = sqrt(difx*difx + dify*dify);
+      // squared euclidean
+      // let d = difx*difx + dify*dify;
+      // manhattan dist
+      // let d = abs(difx) + abs(dify);
       if (d < closed){
         diff = closed - d;
         closed = d;
@@ -60,7 +66,7 @@ function setup() {
   }}
   // make border
   let b = xs*ys + 1;
-  for(let n = 0; n < 20; n++){
+  for(let n = 0; n < 30; n++){
   for(let x = 0; x < w; x++){
   for(let y = 0; y < h; y++){
     let cur = field[x + 1][y + 1]
